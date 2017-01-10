@@ -1,41 +1,74 @@
-import React, { Component } from 'react';
-import './App.css';
-
+import React from "react";
+import Friend from './Friend'
+import friends from './friends'
 class FriendsList extends React.Component {
-  constructor(props){
-    super(props)
-    this.state={
-      searchText:'',
-      orderBy:'name',
-      order:'ascending'
-    }
-  }
-  render() {
-    return (
-      <div>
-      	<form className="form-inline searchForm" role="form">
-      		<div className="form-group">
+	constructor( props ) {
+		super( props );
 
-      			<input value={this.state.searchText} className="form-control" placeholder="Search For Friends" />
+		this.state = {
+			  searchText: ""
+			, orderBy: "name"
+			, order: "ascending"
+		};
+	}
 
-                  <select value={this.state.orderBy}className="input-medium">
-                      <option value = 'name'>Name</option>
-                      <option value = 'friend_count'>#Friends</option>
-                  </select>
+	handleChange( field, event ) {
+		this.setState( { [ field ]: event.target.value } );
+	}
 
-                  <select value = {this.state.order} className="input-medium">
-                      <option value='decending'>Descending</option>
-                      <option value='ascending'>Ascending</option>
-                  </select>
+	render() {
+    const friendsList = friends.map( friend => (
+      <Friend
+        currentLocation={ friend.current_location || {} }
+        friendCount={ friend.friend_count }
+        key={ friend.$$hashKey }
+        name={ friend.name }
+        pictureUrl={ friend.pic_square }
+        status={ friend.status ? friend.status.message : "" }
+      />
+    ) );
+		return (
+			<div>
+				<form
+					className="form-inline searchForm"
+					role="form"
+				>
+					<div className="form-group">
 
-      		</div>
-      	</form>
+						<input
+							className="form-control"
+							onChange={ this.handleChange.bind( this, "searchText" ) }
+							placeholder="Search For Friends"
+							value={ this.state.searchText }
+						/>
 
-      	<ul>
-      	</ul>
-      </div>
-    );
-  }
+						<select
+							className="input-medium"
+							onChange={ this.handleChange.bind( this, "orderBy" ) }
+							value={ this.state.orderBy }
+						>
+							<option value="name">Name</option>
+							<option value="friend_count">#Friends</option>
+						</select>
+
+						<select
+							className="input-medium"
+							onChange={ this.handleChange.bind( this, "order" ) }
+							value={ this.state.order }
+						>
+							<option value={ "descending" }>Descending</option>
+							<option value={ "ascending" }>Ascending</option>
+						</select>
+
+					</div>
+				</form>
+
+				<ul>
+          {friendsList}
+				</ul>
+			</div>
+		);
+	}
 }
 
 export default FriendsList;
